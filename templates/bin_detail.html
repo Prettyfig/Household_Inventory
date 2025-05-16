@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>{{ bin.name }} ({{ bin.location }})</h2>
+<a href="{{ url_for('bin.edit_bin', bin_id=bin.id) }}"><i class="fa fa-edit"></i> Edit Bin</a>
+<p>{{ bin.notes }}</p>
+{% if bin.qr_code_filename %}
+   <img src="{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}" width="150" class="qr-code" alt="QR code for {{ bin.name }}">
+{% endif %}
+<h3>Inventory</h3>
+
+<form id="bulk-item-form" method="post" action="{{ url_for('item.bulk_action', bin_id=bin.id) }}">
+    <div style="margin-bottom: 8px;">
+        <input type="checkbox" id="select-all-items" onclick="toggleAllItems(this)">
+        <label for="select-all-items">Select All</label>
+        <button type="submit" name="action" value="delete" onclick="return confirm('Are you sure you want to delete the selected items?');">
+            <i class="fa fa-trash"></i> Delete Selected
+        </button>
+        <button type="submit" name="action" value="move">
+            <i class="fa fa-arrow-right"></i> Move Selected
+        </button>
+        <select name="new_bin_id" style="margin-left:8px;">
+            <option value="">-- Move to Bin --</option>
+            {% for b in bins %}
+                {% if b.id != bin.id %}
+                    <option value="{{ b.id }}">{{ b.name }} ({{ b.location }})</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <ul>
+        {% for item in items %}
+        <li>
+            <input type="checkbox" name="item_ids" value="{{ item.id }}" class="item-checkbox">
+            <strong>{{ item.name }}</strong> ({{ item.quantity }})<br>
+            {% if item.notes %}<em>Notes:</em> {{ item.notes }}<br>{% endif %}
+            {% if item.photo_filename %}
+                <img src="{{ url_for('static', filename='item_photos/' ~ item.photo_filename) }}" width="100" class="item-thumbnail" alt="Photo of {{ item.name }}">
+            {% endif %}
+            <!-- ...existing item actions (edit, delete, move single)... -->
+        </li>
+        {% endfor %}
+    </ul>
+</form>
+
+<script>
+function toggleAllItems(source) {
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    for (const cb of checkboxes) {
+        cb.checked = source.checked;
+    }
+}
+</script>
+
+<!-- Pagination controls for items -->
+<div class="pagination">
+    {% if items_pagination.has_prev %}
+        <a href="{{ url_for('bin.bin_detail', bin_id=bin.id, page=items_pagination.prev_num) }}">&laquo; Prev</a>
+    {% endif %}
+    <span>Page {{ items_pagination.page }} of {{ items_pagination.pages }}</span>
+    {% if items_pagination.has_next %}
+        <a href="{{ url_for('bin.bin_detail', bin_id=bin.id, page=items_pagination.next_num) }}">Next &raquo;</a>
+    {% endif %}
+</div>
+
+<h4>Add Item</h4>
+<form action="{{ url_for('item.add_item', bin_id=bin.id) }}" method="post" enctype="multipart/form-data" class="add-item-form">
+    <div>
+        Name: <input name="name" required>
+    </div>
+    <div>
+        Quantity: <input name="quantity" type="number" value="1" min="1" required>
+    </div>
+    <div>
+        Notes: <input name="notes">
+    </div>
+    <div>
+        Photo: <input type="file" name="photo" accept="image/png, image/jpeg">
+    </div>
+    <div>
+        <button type="submit"><i class="fa fa-plus"></i> Add Item</button>
+    </div>
+</form>
+<a href="{{ url_for('main.index') }}">Back to Bins</a>
+{% endblock %}

@@ -1,0 +1,10 @@
+# filepath: c:\Users\temp\Coding 2025\Househole_Inventory_v2\Household_Inventory\app.yaml
+runtime: python311
+entrypoint: gunicorn -b :$PORT app:app
+
+handlers:
+- url: /static
+  static_dir: static
+
+- url: /.*
+  script: auto

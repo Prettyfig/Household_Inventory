@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Edit Item</h2>
+<form method="post">
+    <div>Name: <input name="name" value="{{ item.name }}" required></div>
+    <div>Quantity: <input name="quantity" type="number" value="{{ item.quantity }}" min="1" required></div>
+    <div>Notes: <input name="notes" value="{{ item.notes }}"></div>
+    <button type="submit"><i class="fa fa-save"></i> Save</button>
+    <a href="{{ url_for('bin.bin_detail', bin_id=item.bin_id) }}">Cancel</a>
+</form>
+{% endblock %}

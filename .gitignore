@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+venv/
+env/
+
+# Database
+*.db
+inventory.db
+
+# Credentials
+credentials.json
+
+# Uploaded files
+static/qrcodes/
+static/item_photos/

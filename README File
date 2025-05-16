@@ -1,0 +1,15 @@
+# Household Inventory App
+
+## Setup
+
+1. Install Python 3.x
+2. Clone or copy this folder to your computer.
+3. Open a terminal in this folder.
+4. Run: pip install -r requirements.txt
+5. Run: python app.py
+6. Open http://localhost:5000 in your browser.
+
+## Notes
+- Place your Google Sheets `credentials.json` in this folder if using Google Sheets export.
+- All data is stored in `inventory.db` (SQLite).
+- Uploaded images and QR codes are in `static/`.
