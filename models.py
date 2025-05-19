@@ -15,6 +15,7 @@ class StorageBin(db.Model):
     notes = db.Column(db.Text)
     qr_code_filename = db.Column(db.String(120))
     items = db.relationship('InventoryItem', backref='bin', lazy='dynamic', cascade="all, delete-orphan")
+    color = db.Column(db.String(7))  # e.g. "#aabbcc"
 
 class InventoryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,3 +25,7 @@ class InventoryItem(db.Model):
     photo_filename = db.Column(db.String(255))
     bin_id = db.Column(db.Integer, db.ForeignKey('storage_bin.id'))
 
+class Location(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    color = db.Column(db.String(7))  # e.g. "#aabbcc"

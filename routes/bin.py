@@ -4,8 +4,15 @@ from models import db, StorageBin
 import qrcode
 import os
 from utils import get_local_ip
+import random
+
 
 bin_bp = Blueprint('bin', __name__)
+
+
+def random_color():
+    """Generate a random color in hex format."""
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF)) 
 
 @bin_bp.route('/bin/add', methods=['POST'])
 @login_required
@@ -13,7 +20,14 @@ def add_bin():
     name = request.form['name']
     location = request.form['location']
     notes = request.form['notes']
-    new_bin = StorageBin(name=name, location=location, notes=notes)
+
+    # Always get the color from the first bin at this location (after color change, all bins have the same color)
+    existing_bin = StorageBin.query.filter_by(location=location).first()
+    if existing_bin:
+        color = existing_bin.color
+    else:
+        color = random_color()
+    new_bin = StorageBin(name=name, location=location, notes=notes, color=color)
     db.session.add(new_bin)
     db.session.commit()
 
@@ -30,6 +44,17 @@ def add_bin():
     db.session.commit()
 
     flash('Bin added!', 'success')
+    return redirect(url_for('main.index'))
+
+@bin_bp.route('/bin/location/<location>/change_color', methods=['POST'])
+@login_required
+def change_location_color(location):
+    color = request.form['color']
+    bins = StorageBin.query.filter_by(location=location).all()
+    for bin in bins:
+        bin.color = color
+    db.session.commit()
+    flash(f"Color for {location} updated!", "success")
     return redirect(url_for('main.index'))
 
 @bin_bp.route('/bin/<int:bin_id>')
@@ -65,8 +90,16 @@ def edit_bin(bin_id):
     bin = StorageBin.query.get_or_404(bin_id)
     if request.method == 'POST':
         bin.name = request.form['name']
-        bin.location = request.form['location']
+        new_location = request.form['location']
         bin.notes = request.form['notes']
+        # Update color if location changed
+        if bin.location != new_location:
+            existing_bin = StorageBin.query.filter_by(location=new_location).first()
+            if existing_bin and existing_bin.color:
+                bin.color = existing_bin.color
+            else:
+                bin.color = random_color()
+            bin.location = new_location
         db.session.commit()
         flash("Bin updated successfully!", "success")
         return redirect(url_for('bin.bin_detail', bin_id=bin.id))
@@ -86,10 +119,17 @@ def bulk_action():
         flash(f"Deleted {len(bin_ids)} bins.", "success")
     elif action == 'move':
         new_location = request.form.get('new_location')
+        # Find color for new location, or assign a new one
+        existing_bin = StorageBin.query.filter_by(location=new_location).first()
+        if existing_bin and existing_bin.color:
+            color = existing_bin.color
+        else:
+            color = random_color()
         for bin_id in bin_ids:
             bin = StorageBin.query.get(bin_id)
             if bin and new_location:
                 bin.location = new_location
+                bin.color = color
         db.session.commit()
         flash(f"Moved {len(bin_ids)} bins.", "success")
     return redirect(url_for('main.index'))

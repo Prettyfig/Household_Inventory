@@ -1,24 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-<h2>{{ bin.name }} ({{ bin.location }})</h2>
-<a href="{{ url_for('bin.edit_bin', bin_id=bin.id) }}"><i class="fa fa-edit"></i> Edit Bin</a>
-<p>{{ bin.notes }}</p>
-{% if bin.qr_code_filename %}
-   <img src="{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}" width="150" class="qr-code" alt="QR code for {{ bin.name }}">
+<h2 class="mb-3">
+    <span class="fw-bold px-3 py-2"
+          style="background: {{ bin.color or '#007bff' }}; color: #fff; border-radius: 8px;">
+        {{ bin.name }}
+    </span>
+    <span class="text-muted ms-2">({{ bin.location }})</span>
+</h2>
+<a href="{{ url_for('bin.edit_bin', bin_id=bin.id) }}" class="btn btn-outline-primary mb-3"><i class="fa fa-edit"></i> Edit Bin</a>
+{% if bin.notes %}
+    <p class="text-secondary">{{ bin.notes }}</p>
 {% endif %}
-<h3>Inventory</h3>
+{% if bin.qr_code_filename %}
+   <img src="{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}" width="150" class="qr-code mb-4" alt="QR code for {{ bin.name }}">
+{% endif %}
+<h3 class="mb-3">Inventory</h3>
 
 <form id="bulk-item-form" method="post" action="{{ url_for('item.bulk_action', bin_id=bin.id) }}">
-    <div style="margin-bottom: 8px;">
+    <div class="mb-3 d-flex flex-wrap gap-2 align-items-center">
         <input type="checkbox" id="select-all-items" onclick="toggleAllItems(this)">
-        <label for="select-all-items">Select All</label>
-        <button type="submit" name="action" value="delete" onclick="return confirm('Are you sure you want to delete the selected items?');">
+        <label for="select-all-items" class="me-2">Select All</label>
+        <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete the selected items?');">
             <i class="fa fa-trash"></i> Delete Selected
         </button>
-        <button type="submit" name="action" value="move">
+        <button type="submit" name="action" value="move" class="btn btn-secondary btn-sm">
             <i class="fa fa-arrow-right"></i> Move Selected
         </button>
-        <select name="new_bin_id" style="margin-left:8px;">
+        <select name="new_bin_id" class="form-select form-select-sm w-auto ms-2">
             <option value="">-- Move to Bin --</option>
             {% for b in bins %}
                 {% if b.id != bin.id %}
@@ -27,15 +35,17 @@
             {% endfor %}
         </select>
     </div>
-    <ul>
+    <ul class="list-group">
         {% for item in items %}
-        <li>
-            <input type="checkbox" name="item_ids" value="{{ item.id }}" class="item-checkbox">
-            <strong>{{ item.name }}</strong> ({{ item.quantity }})<br>
-            {% if item.notes %}<em>Notes:</em> {{ item.notes }}<br>{% endif %}
-            {% if item.photo_filename %}
-                <img src="{{ url_for('static', filename='item_photos/' ~ item.photo_filename) }}" width="100" class="item-thumbnail" alt="Photo of {{ item.name }}">
-            {% endif %}
+        <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between">
+            <div>
+                <input type="checkbox" name="item_ids" value="{{ item.id }}" class="form-check-input me-2 item-checkbox">
+                <strong>{{ item.name }}</strong> <span class="text-muted">({{ item.quantity }})</span>
+                {% if item.notes %}<br><em class="text-secondary">Notes:</em> {{ item.notes }}{% endif %}
+                {% if item.photo_filename %}
+                    <br><img src="{{ url_for('static', filename='item_photos/' ~ item.photo_filename) }}" width="100" class="item-thumbnail mt-2" alt="Photo of {{ item.name }}">
+                {% endif %}
+            </div>
             <!-- ...existing item actions (edit, delete, move single)... -->
         </li>
         {% endfor %}
@@ -53,32 +63,37 @@ function toggleAllItems(source) {
 
 <!-- Pagination controls for items -->
 <div class="pagination">
+    {% set total_pages = items_pagination.pages if items_pagination.pages > 0 else 1 %}
     {% if items_pagination.has_prev %}
         <a href="{{ url_for('bin.bin_detail', bin_id=bin.id, page=items_pagination.prev_num) }}">&laquo; Prev</a>
     {% endif %}
-    <span>Page {{ items_pagination.page }} of {{ items_pagination.pages }}</span>
+    <span>Page {{ items_pagination.page }} of {{ total_pages }}</span>
     {% if items_pagination.has_next %}
         <a href="{{ url_for('bin.bin_detail', bin_id=bin.id, page=items_pagination.next_num) }}">Next &raquo;</a>
     {% endif %}
 </div>
 
-<h4>Add Item</h4>
+<h4 class="mt-4">Add Item</h4>
 <form action="{{ url_for('item.add_item', bin_id=bin.id) }}" method="post" enctype="multipart/form-data" class="add-item-form">
-    <div>
-        Name: <input name="name" required>
+    <div class="mb-2">
+        <label class="form-label">Name:</label>
+        <input name="name" class="form-control" required>
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Quantity:</label>
+        <input name="quantity" type="number" value="1" min="1" class="form-control" required>
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Notes:</label>
+        <input name="notes" class="form-control">
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Photo:</label>
+        <input type="file" name="photo" accept="image/png, image/jpeg" class="form-control">
     </div>
     <div>
-        Quantity: <input name="quantity" type="number" value="1" min="1" required>
-    </div>
-    <div>
-        Notes: <input name="notes">
-    </div>
-    <div>
-        Photo: <input type="file" name="photo" accept="image/png, image/jpeg">
-    </div>
-    <div>
-        <button type="submit"><i class="fa fa-plus"></i> Add Item</button>
+        <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Add Item</button>
     </div>
 </form>
-<a href="{{ url_for('main.index') }}">Back to Bins</a>
+<a href="{{ url_for('main.index') }}" class="btn btn-link mt-3">Back to Bins</a>
 {% endblock %}

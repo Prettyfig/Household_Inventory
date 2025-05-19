@@ -114,6 +114,13 @@ button.danger:hover {
     background: #c0392b;
 }
 
+.bin-name {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
 .add-section, .inventory-section {
     margin-bottom: 32px;
     padding: 20px;
@@ -305,4 +312,24 @@ body.scheme-green {
     border-radius: 8px;
     padding: 8px;
     background: #fff;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table th, .table td {
+    min-width: 120px;
+    max-width: 220px;
+}
+
+.bin-notes {
+    max-width: 200px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

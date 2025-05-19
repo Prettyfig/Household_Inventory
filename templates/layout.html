@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Household Inventory</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,15 +14,14 @@
         <button class="scheme-btn" style="background:#8e44ad;" title="Dark" onclick="setScheme('scheme-dark')"></button>
         <button class="scheme-btn" style="background:#27ae60;" title="Green" onclick="setScheme('scheme-green')"></button>
     </div>
-    <div class="container">
-        <nav class="main-nav" aria-label="Main Navigation">
-            <a href="{{ url_for('main.index') }}"><i class="fa fa-home"></i> Home</a>
-            <a href="{{ url_for('main.export_sheets') }}"><i class="fa fa-file-excel" style="color:#21a366"></i> Export to Google Sheets</a>
-            <a href="{{ url_for('main.import_csv') }}"><i class="fa fa-upload"></i> Import CSV</a>
-            <a href="{{ url_for('main.export_csv') }}"><i class="fa fa-download"></i> Export CSV</a>
-                       <!-- Add more links as needed -->
+    <div class="container mt-4">
+        <nav class="main-nav mb-4 d-flex gap-3" aria-label="Main Navigation">
+          <a class="btn btn-outline-primary" href="{{ url_for('main.index') }}"><i class="fa fa-home"></i> Home</a>
+          <a class="btn btn-outline-success" href="{{ url_for('main.export_sheets') }}"><i class="fa fa-file-excel"></i> Export to Google Sheets</a>
+          <a class="btn btn-outline-secondary" href="{{ url_for('main.import_csv') }}"><i class="fa fa-upload"></i> Import CSV</a>
+          <a class="btn btn-outline-secondary" href="{{ url_for('main.export_csv') }}"><i class="fa fa-download"></i> Export CSV</a>
         </nav>
-        <h1>Household Inventory</h1>
+        <h1 class="mb-4">Household Inventory</h1>
 
         <!-- Flashed messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}

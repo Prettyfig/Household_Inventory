@@ -5,11 +5,22 @@
 1. Install Python 3.x
 2. Clone or copy this folder to your computer.
 3. Open a terminal in this folder.
-4. Run: pip install -r requirements.txt
-5. Run: python app.py
+4. Run: `pip install -r requirements.txt`
+5. Run: `python app.py`
 6. Open http://localhost:5000 in your browser.
 
 ## Notes
 - Place your Google Sheets `credentials.json` in this folder if using Google Sheets export.
 - All data is stored in `inventory.db` (SQLite).
 - Uploaded images and QR codes are in `static/`.
+
+## Debugging & Logs
+
+- The application writes logs and memory usage info to `app_debug.log` in the project directory.
+- Check this file for errors, export status, and memory usage trends.
+- Memory usage is logged every 60 seconds while the app is running.
+
+## Troubleshooting
+
+- If you experience high memory usage or crashes, review `app_debug.log` for details.
+- Make sure `app_debug.log` is listed in your `.gitignore` to avoid committing log files to version control.

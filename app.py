@@ -1,3 +1,19 @@
+import logging
+import tracemalloc
+
+# Start tracemalloc for memory tracking
+tracemalloc.start()
+
+# Set up logging to file and console
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s',
+    handlers=[
+        logging.FileHandler("app_debug.log"),
+        logging.StreamHandler()
+    ]
+)
+
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, Response
 from models import db, StorageBin, InventoryItem
 import qrcode
@@ -32,11 +48,9 @@ db.init_app(app)
 login_manager.init_app(app)
 socketio = SocketIO(app)
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User(user_id)
-
 
 def export_to_google_sheets():
     try:
@@ -53,8 +67,10 @@ def export_to_google_sheets():
             if not bin.items:
                 sheet.append_row([bin.name, bin.location, bin.notes, '', ''])
         flash("Exported to Google Sheets successfully!", "success")
+        logging.info("Exported to Google Sheets successfully!")
     except Exception as e:
         flash("Failed to export, Please try again.", "error")
+        logging.error(f"Export error: {e}")
         print("Export error:", e)
 
 with app.app_context():
@@ -66,6 +82,19 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(bin_bp)
 app.register_blueprint(item_bp)
 
+# Periodically log memory usage
+import threading
+import time
+
+def log_memory_usage():
+    while True:
+        current, peak = tracemalloc.get_traced_memory()
+        logging.info(f"Current memory usage: {current / 1024 / 1024:.2f} MB; Peak: {peak / 1024 / 1024:.2f} MB")
+        time.sleep(60)  # Log every 60 seconds
+
+memory_thread = threading.Thread(target=log_memory_usage, daemon=True)
+memory_thread.start()
 
 if __name__ == '__main__':
+    logging.info("Starting Household Inventory app...")
     socketio.run(app, debug=True, host='0.0.0.0')

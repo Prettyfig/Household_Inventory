@@ -17,3 +17,5 @@ credentials.json
 # Uploaded files
 static/qrcodes/
 static/item_photos/
+
+app_debug.log
