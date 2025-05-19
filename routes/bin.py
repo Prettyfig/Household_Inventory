@@ -21,6 +21,12 @@ def add_bin():
     location = request.form['location']
     notes = request.form['notes']
 
+    # Prevent duplicate bin names in the same location
+    existing = StorageBin.query.filter_by(name=name, location=location).first()
+    if existing:
+        flash("A bin with that name already exists in this location!", "error")
+        return redirect(url_for('main.index'))
+
     # Always get the color from the first bin at this location (after color change, all bins have the same color)
     existing_bin = StorageBin.query.filter_by(location=location).first()
     if existing_bin:

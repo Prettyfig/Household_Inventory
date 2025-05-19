@@ -1,17 +1,15 @@
 import logging
 import tracemalloc
-
+from logging.handlers import RotatingFileHandler
 # Start tracemalloc for memory tracking
 tracemalloc.start()
 
 # Set up logging to file and console
+handler = RotatingFileHandler('app_debug.log', maxBytes=10000, backupCount=1)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)s %(message)s',
-    handlers=[
-        logging.FileHandler("app_debug.log"),
-        logging.StreamHandler()
-    ]
+    handlers=[handler, logging.StreamHandler()]
 )
 
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, Response
@@ -35,12 +33,15 @@ from routes.item import item_bp
 from user_model import User
 from utils import get_local_ip
 from routes.main import main_bp
+from dotenv import load_dotenv
+
+load_dotenv()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # Needed for session/flash
+app.secret_key = os.environ.get('SECRET_KEY', 'changeme')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///inventory.db')
 app.config['UPLOAD_FOLDER'] = 'static/qrcodes'
 db.init_app(app)

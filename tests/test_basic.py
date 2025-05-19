@@ -3,6 +3,11 @@ from app import app, db
 from models import StorageBin
 
 @pytest.fixture
+
+def test_homepage(client):
+    response = client.get('/')
+    assert response.status_code == 200
+
 def client():
     app.config['TESTING'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'

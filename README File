@@ -6,8 +6,13 @@
 2. Clone or copy this folder to your computer.
 3. Open a terminal in this folder.
 4. Run: `pip install -r requirements.txt`
-5. Run: `python app.py`
-6. Open http://localhost:5000 in your browser.
+5. Create a `.env` file in this folder with your secrets (see below).
+6. Run: `python app.py`
+7. Open http://localhost:5000 in your browser.
+
+## .env File Example
+
+Create a file named `.env` in your project folder with:
 
 ## Notes
 - Place your Google Sheets `credentials.json` in this folder if using Google Sheets export.
