@@ -2,7 +2,7 @@
 {% block content %}
 <h2 class="mb-3">
     <span class="fw-bold px-3 py-2"
-          style="background: {{ bin.color or '#007bff' }}; color: #fff; border-radius: 8px;">
+          style="background: {{ bin.color|default('#007bff') }}; color: #fff; border-radius: 8px;">
         {{ bin.name }}
     </span>
     <span class="text-muted ms-2">({{ bin.location }})</span>

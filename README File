@@ -35,7 +35,11 @@ python app.py
 ## .env File Example
 
 Create a file named `.env` in your project folder with:
-SECRET_KEY=supersecretkey DATABASE_URL=sqlite:///inventory.db MAIL_USERNAME=your_email@example.com MAIL_PASSWORD=your_email_password SENTRY_DSN=https://your-sentry-dsn
+SECRET_KEY=supersecretkey 
+DATABASE_URL=sqlite:///inventory.db 
+MAIL_USERNAME=your_email@example.com 
+MAIL_PASSWORD=your_email_password 
+SENTRY_DSN=https://your-sentry-dsn
 
 ---
 
@@ -66,3 +70,13 @@ SECRET_KEY=supersecretkey DATABASE_URL=sqlite:///inventory.db MAIL_USERNAME=your
 
 - For more details, see code comments and each route’s docstring.
 - For API endpoints and advanced usage, see the `routes/` folder and templates.
+
+## References & Resources
+
+- [Flask](https://flask.palletsprojects.com/)
+- [Flask-Login](https://flask-login.readthedocs.io/)
+- [Flask-Mail](https://pythonhosted.org/Flask-Mail/)
+- [Sentry](https://sentry.io/)
+- [Google Sheets API](https://developers.google.com/sheets/api)
+- [Bootstrap](https://getbootstrap.com/)
+- [Font Awesome](https://fontawesome.com/)
