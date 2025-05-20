@@ -1,96 +1,101 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Storage Bins</h2>
-    <form method="get" action="{{ url_for('main.index') }}" class="d-flex gap-2">
-        <input type="text" class="form-control" name="q" placeholder="Search bins..." value="{{ request.args.get('q', '') }}">
-        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-search"></i> Search</button>
-    </form>
-</div>
+<main role="main">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0" id="storage-bins-heading">Storage Bins</h2>
+      <form method="get" action="{{ url_for('main.index') }}" class="d-flex gap-2 mb-4" aria-label="Search bins">
+          <input type="text" class="form-control" name="q" placeholder="Search bins..." value="{{ request.args.get('q', '') }}" aria-label="Search by bin name">
+          <input type="text" class="form-control" name="location" placeholder="Location" value="{{ request.args.get('location', '') }}" aria-label="Search by location">
+          <button type="submit" class="btn btn-outline-primary" aria-label="Search"><i class="fa fa-search"></i> Search</button>
+      </form>
+  </div>
 
-<!-- Add Bin Form -->
-<form method="post" action="{{ url_for('bin.add_bin') }}" class="row g-2 align-items-end mb-4">
-    <div class="col-md-3">
-        <label for="name" class="form-label">Bin Name</label>
-        <input type="text" id="name" name="name" class="form-control" placeholder="Bin Name" required>
-    </div>
-    <div class="col-md-3">
-        <label for="location" class="form-label">Location</label>
-        <input type="text" id="location" name="location" class="form-control" placeholder="Location" required>
-    </div>
-    <div class="col-md-4">
-        <label for="notes" class="form-label">Notes</label>
-        <input type="text" id="notes" name="notes" class="form-control" placeholder="Notes">
-    </div>
-    <div class="col-md-2 d-grid">
-        <button type="submit" class="btn btn-success"><i class="fa fa-plus"></i> Add Bin</button>
-    </div>
-</form>
+  <!-- Add Bin Form -->
+  <form method="post" action="{{ url_for('bin.add_bin') }}" class="row g-2 align-items-end mb-4" aria-label="Add new bin">
+      <div class="col-md-3">
+          <label for="name" class="form-label">Bin Name</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="Bin Name" required aria-required="true" aria-label="Bin Name">
+      </div>
+      <div class="col-md-3">
+          <label for="location" class="form-label">Location</label>
+          <input type="text" id="location" name="location" class="form-control" placeholder="Location" required aria-required="true" aria-label="Location">
+      </div>
+      <div class="col-md-4">
+          <label for="notes" class="form-label">Notes</label>
+          <input type="text" id="notes" name="notes" class="form-control" placeholder="Notes" aria-label="Notes">
+      </div>
+      <div class="col-md-2 d-grid">
+          <button type="submit" class="btn btn-success" aria-label="Add Bin"><i class="fa fa-plus"></i> Add Bin</button>
+      </div>
+  </form>
 
-<!-- Bin List Table -->
-<div class="table-responsive">
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>Bin Name</th>
-            <th>Color</th>
-            <th>Location</th>
-            <th>Notes</th>
-            <th>QR Code</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for bin in bins %}
-        <tr>
-            <td>
-                <a href="{{ url_for('bin.bin_detail', bin_id=bin.id) }}"
-                    class="fw-bold bin-name"
-                    style="background: {{ bin.color or '#007bff' }}; color: #fff; padding: 2px 8px; border-radius: 6px;"
-                    title="{{ bin.name }}">
-                    {{ bin.name }}
-                </a>
-            </td>
-            <td>
-                <form method="post" action="{{ url_for('bin.change_location_color', location=bin.location) }}" class="d-inline-block">
-                    <input type="color" name="color" value="{{ bin.color or '#cccccc' }}">
-                    <button type="submit" class="btn btn-sm btn-outline-primary">Change</button>
-                </form>
-            </td>
-            <td>
-                <span class="text-muted" title="{{ bin.location }}">{{ bin.location }}</span>
-            </td>
-            <td>
-                {% if bin.notes %}
-                    <span class="bin-notes text-secondary small" title="{{ bin.notes }}">{{ bin.notes }}</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if bin.qr_code_filename %}
-                    <img src="{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}"
-                         alt="QR code for {{ bin.name }}"
-                         style="height:60px;">
-                {% endif %}
-            </td>
-            <td>
-                <form method="post" action="{{ url_for('bin.delete_bin', bin_id=bin.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this bin?');">
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-</div>
+  <!-- Bin List Table -->
+  <div class="table-responsive" role="region" aria-labelledby="storage-bins-heading">
+  <table class="table table-striped align-middle" aria-describedby="storage-bins-heading">
+      <thead>
+          <tr>
+              <th scope="col">Bin Name</th>
+              <th scope="col">Color</th>
+              <th scope="col">Location</th>
+              <th scope="col">Notes</th>
+              <th scope="col">QR Code</th>
+              <th scope="col">Delete</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for bin in bins %}
+          <tr>
+              <td>
+                  <a href="{{ url_for('bin.bin_detail', bin_id=bin.id) }}"
+                      class="fw-bold bin-name"
+                      style="background: {{ bin.color or '#007bff' }}; color: #fff; padding: 2px 8px; border-radius: 6px;"
+                      title="{{ bin.name }}"
+                      aria-label="View details for bin {{ bin.name }}">
+                      {{ bin.name }}
+                  </a>
+              </td>
+              <td>
+                  <form method="post" action="{{ url_for('bin.change_location_color', location=bin.location) }}" class="d-inline-block" aria-label="Change color for location {{ bin.location }}">
+                      <input type="color" name="color" value="{{ bin.color or '#cccccc' }}" aria-label="Bin color">
+                      <button type="submit" class="btn btn-sm btn-outline-primary" aria-label="Change color">Change</button>
+                  </form>
+              </td>
+              <td>
+                  <span class="text-muted" title="{{ bin.location }}" aria-label="Location">{{ bin.location }}</span>
+              </td>
+              <td>
+                  {% if bin.notes %}
+                      <span class="bin-notes text-secondary small" title="{{ bin.notes }}" aria-label="Notes">{{ bin.notes }}</span>
+                  {% endif %}
+              </td>
+              <td>
+                  {% if bin.qr_code_filename %}
+                      <img src="{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}"
+                           alt="QR code for {{ bin.name }}"
+                           style="height:60px;"
+                           aria-label="QR code for {{ bin.name }}">
+                  {% endif %}
+              </td>
+              <td>
+                  <form method="post" action="{{ url_for('bin.delete_bin', bin_id=bin.id) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this bin?');" aria-label="Delete bin {{ bin.name }}">
+                      <button type="submit" class="btn btn-sm btn-danger" aria-label="Delete bin {{ bin.name }}">Delete</button>
+                  </form>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+  </div>
 
-<div class="pagination">
-    {% set total_pages = pagination.pages if pagination.pages > 0 else 1 %}
-    {% if pagination.has_prev %}
-        <a href="{{ url_for('main.index', page=pagination.prev_num, q=request.args.get('q', '')) }}">&laquo; Prev</a>
-    {% endif %}
-    <span>Page {{ pagination.page }} of {{ total_pages }}</span>
-    {% if pagination.has_next %}
-        <a href="{{ url_for('main.index', page=pagination.next_num, q=request.args.get('q', '')) }}">Next &raquo;</a>
-    {% endif %}
-</div>
+  <nav class="pagination" aria-label="Pagination">
+      {% set total_pages = pagination.pages if pagination.pages > 0 else 1 %}
+      {% if pagination.has_prev %}
+          <a href="{{ url_for('main.index', page=pagination.prev_num, q=request.args.get('q', '')) }}" aria-label="Previous page">&laquo; Prev</a>
+      {% endif %}
+      <span>Page {{ pagination.page }} of {{ total_pages }}</span>
+      {% if pagination.has_next %}
+          <a href="{{ url_for('main.index', page=pagination.next_num, q=request.args.get('q', '')) }}" aria-label="Next page">Next &raquo;</a>
+      {% endif %}
+  </nav>
+</main>
 {% endblock %}

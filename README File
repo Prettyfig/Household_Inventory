@@ -1,5 +1,17 @@
 # Household Inventory App
 
+## Features
+
+- User registration and login
+- Password reset and email verification (see docs)
+- Export/import inventory as CSV
+- Activity log for all actions
+- Upload and view item images
+- Advanced search and filters
+- Mobile-friendly and installable as a PWA
+- Accessible and screen-reader friendly
+- Error and performance monitoring with Sentry
+
 ## Setup
 
 1. Install Python 3.x
@@ -13,8 +25,45 @@
 ## .env File Example
 
 Create a file named `.env` in your project folder with:
+```markdown
+# Household Inventory App
+
+## Features
+
+- User registration and login
+- Password reset and email verification (see docs)
+- Export/import inventory as CSV
+- Activity log for all actions
+- Upload and view item images
+- Advanced search and filters
+- Mobile-friendly and installable as a PWA
+- Accessible and screen-reader friendly
+- Error and performance monitoring with Sentry
+
+## Setup
+
+1. Install Python 3.x
+2. Clone or copy this folder to your computer.
+3. Open a terminal in this folder.
+4. Run: `pip install -r requirements.txt`
+5. Create a `.env` file in this folder with your secrets (see below).
+6. Run: `python app.py`
+7. Open http://localhost:5000 in your browser.
+
+## .env File Example
+
+Create a file named `.env` in your project folder with:
+```
+SECRET_KEY=supersecretkey
+DATABASE_URL=sqlite:///inventory.db
+MAIL_USERNAME=your_email@example.com
+MAIL_PASSWORD=your_email_password
+SENTRY_DSN=https://your-sentry-dsn
+```
+
 
 ## Notes
+
 - Place your Google Sheets `credentials.json` in this folder if using Google Sheets export.
 - All data is stored in `inventory.db` (SQLite).
 - Uploaded images and QR codes are in `static/`.
@@ -28,4 +77,9 @@ Create a file named `.env` in your project folder with:
 ## Troubleshooting
 
 - If you experience high memory usage or crashes, review `app_debug.log` for details.
-- Make sure `app_debug.log` is listed in your `.gitignore` to avoid committing log files to version control.
+- Make sure `app_debug.log` and `.env` are listed in your `.gitignore` to avoid committing log files and secrets to version control.
+
+## Documentation
+
+- For more details, see the code comments and each route’s docstring.
+- For API endpoints and advanced usage, see the `routes/` folder and templates.

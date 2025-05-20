@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
-from flask_login import login_required
-from models import db, StorageBin
+from flask_login import login_required, current_user
+from models import db, StorageBin, ActivityLog
 import qrcode
 import os
 from utils import get_local_ip
@@ -8,7 +8,6 @@ import random
 
 
 bin_bp = Blueprint('bin', __name__)
-
 
 def random_color():
     """Generate a random color in hex format."""
@@ -47,6 +46,14 @@ def add_bin():
 
     # Save filename to bin
     new_bin.qr_code_filename = qr_filename
+    db.session.commit()
+
+    log = ActivityLog(
+        user_id=current_user.id,
+        action="add_bin",
+        details=f"Added bin {name} at {location}"
+    )
+    db.session.add(log)
     db.session.commit()
 
     flash('Bin added!', 'success')
@@ -139,3 +146,4 @@ def bulk_action():
         db.session.commit()
         flash(f"Moved {len(bin_ids)} bins.", "success")
     return redirect(url_for('main.index'))
+

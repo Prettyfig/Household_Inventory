@@ -34,11 +34,24 @@ from user_model import User
 from utils import get_local_ip
 from routes.main import main_bp
 from dotenv import load_dotenv
+from flask_mail import Mail
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+
+dsn = os.environ.get('SENTRY_DSN')
+sentry_sdk.init(
+    dsn=dsn,
+    integrations=[FlaskIntegration()],
+    traces_sample_rate=1.0
+)
+
 
 load_dotenv()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
+
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'changeme')
@@ -48,6 +61,14 @@ db.init_app(app)
 
 login_manager.init_app(app)
 socketio = SocketIO(app)
+
+app.config['MAIL_SERVER'] = 'smtp.example.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = True
+mail = Mail(app)
+
 
 @login_manager.user_loader
 def load_user(user_id):

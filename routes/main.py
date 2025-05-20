@@ -10,10 +10,23 @@ main_bp = Blueprint('main', __name__)
 @login_required
 def index():
     page = request.args.get('page', 1, type=int)
-    per_page = 10  # or whatever number you want per page
-    pagination = StorageBin.query.paginate(page=page, per_page=per_page)
+    per_page = 10
+    q = request.args.get('q', '')
+    location = request.args.get('location', '')
+    query = StorageBin.query
+    if q:
+        query = query.filter(StorageBin.name.contains(q))
+    if location:
+        query = query.filter(StorageBin.location.contains(location))
+    pagination = query.paginate(page=page, per_page=per_page)
     bins = pagination.items
     return render_template('index.html', bins=bins, pagination=pagination)
+
+@main_bp.route('/activity_log')
+@login_required
+def activity_log():
+    logs = ActivityLog.query.order_by(ActivityLog.timestamp.desc()).limit(100).all()
+    return render_template('activity_log.html', logs=logs)
 
 @main_bp.route('/export_sheets')
 @login_required
