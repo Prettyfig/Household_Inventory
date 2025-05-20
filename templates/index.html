@@ -70,10 +70,38 @@
               </td>
               <td>
                   {% if bin.qr_code_filename %}
+                  <!-- Clickable QR code thumbnail -->
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#qrModal-{{ bin.id }}">
                       <img src="{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}"
                            alt="QR code for {{ bin.name }}"
-                           style="height:60px;"
+                           style="height:60px; cursor:pointer;"
                            aria-label="QR code for {{ bin.name }}">
+                  </a>
+                  <!-- Modal for enlarged QR code -->
+                  <div class="modal fade" id="qrModal-{{ bin.id }}" tabindex="-1" aria-labelledby="qrModalLabel-{{ bin.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="qrModalLabel-{{ bin.id }}">QR Code for {{ bin.name }}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                          <img src="{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}"
+                               alt="QR code for {{ bin.name }}"
+                               style="max-width: 100%; height: 300px;">
+                          <br>
+                          <a href="{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}" 
+                             download="qr_{{ bin.name }}.png" 
+                             class="btn btn-outline-primary mt-3">
+                            Download QR Code
+                          </a>
+                          <button onclick="printQRCode('{{ url_for('static', filename='qrcodes/' ~ bin.qr_code_filename) }}')" class="btn btn-outline-secondary mt-3">
+                            Print QR Code
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   {% endif %}
               </td>
               <td>
@@ -98,4 +126,6 @@
       {% endif %}
   </nav>
 </main>
+<script>
+</script>
 {% endblock %}
