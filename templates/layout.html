@@ -23,6 +23,10 @@
           <a class="btn btn-outline-secondary" href="{{ url_for('main.import_csv') }}"><i class="fa fa-upload"></i> Import CSV</a>
           <a class="btn btn-outline-secondary" href="{{ url_for('main.export_csv') }}"><i class="fa fa-download"></i> Export CSV</a>
         </nav>
+        <!-- Notice about Google Sheets export -->
+        <div class="alert alert-info" role="alert">
+          <strong>Note:</strong> When exporting to Google Sheets, only bins that contain items will be included in the export. Bins with no items will not appear in the spreadsheet.
+        </div>
         <h1 class="mb-4">Household Inventory</h1>
 
         <!-- Flashed messages -->
@@ -62,7 +66,7 @@
       win.document.write('<img src="' + imgUrl + '" style="width:300px;">');
       win.print();
       win.close();
-  }
-</script>
+    }
+    </script>
 </body>
 </html>
