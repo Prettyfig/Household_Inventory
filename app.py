@@ -120,3 +120,6 @@ memory_thread.start()
 if __name__ == '__main__':
     logging.info("Starting Household Inventory app...")
     socketio.run(app, debug=True, host='0.0.0.0')
+
+# Author: Serafina Angerdina
+# Household Inventory App

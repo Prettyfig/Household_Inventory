@@ -43,6 +43,9 @@
 
         {% block content %}{% endblock %}
     </div>
+    <footer class="text-center mt-5 mb-3 text-muted" style="font-size: 0.95em;">
+        &copy; {{ now().year if now else '2025' }} Serafina Angerdina &mdash; Household Inventory App
+    </footer>
     <script>
     function setScheme(scheme) {
         document.body.className = scheme;
